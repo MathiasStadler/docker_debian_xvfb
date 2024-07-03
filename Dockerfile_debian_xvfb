@@ -1,0 +1,66 @@
+FROM debian:stable-slim
+
+# FROM HERE
+# https://www.cyberciti.biz/faq/perl-warning-setting-locale-failed-in-debian-ubuntu/
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_CTYPE="en_US.UTF-8" \
+    LC_NUMERIC="en_US.UTF-8" \
+    LC_TIME="en_US.UTF-8" \
+    LC_COLLATE="en_US.UTF-8" \
+    LC_MONETARY="en_US.UTF-8" \
+    LC_MESSAGES="en_US.UTF-8" \
+    LC_PAPER="en_US.UTF-8" \
+    LC_NAME="en_US.UTF-8" \
+    LC_ADDRESS="en_US.UTF-8" \
+    LC_TELEPHONE="en_US.UTF-8" \
+    LC_MEASUREMENT="en_US.UTF-8" \
+    LC_IDENTIFICATION="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8"
+
+# avoid user interaction
+ARG DEBIAN_FRONTEND=noninteractive 
+
+# CONFIGURE SHELL
+SHELL ["/usr/bin/bash", "-c"]
+
+# set language first
+RUN set -euxo \
+    && apt-get update --yes \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet  apt-utils \
+    locales \
+    apt-transport-https \
+    apt-utils 
+
+RUN set -euxo \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet locales \
+    locales-all \
+    lxde-core \
+    lxde-icon-theme \
+    lxsession-default-apps \
+    lxterminal \
+    net-tools \
+    notification-daemon \
+    x11-apps \
+    x11-utils \
+    x11vnc \
+    x11-xserver-utils \
+    xdg-utils \
+    xorgxrdp \
+    xrdp \
+    xvfb \
+    && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
+    && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
+    && apt-get --yes autoclean \ 
+    && apt-get --yes --auto-remove autoremove \
+    && apt-get clean --yes \
+    && rm --recursive --force /var/lib/apt/lists/*
+
+COPY scripts/bootstrap.sh /scripts/
+
+# remove empty space
+# :g/^ /norm dw
+# sort
+# cat /tmp/t.txt |sort
+
+# docker buildx build --progress=plain -t debian_lxde_xvfb -f Dockerfile_debian_xvfb "."
