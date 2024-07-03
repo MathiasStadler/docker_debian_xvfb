@@ -56,7 +56,31 @@ RUN set -euxo \
     && apt-get clean --yes \
     && rm --recursive --force /var/lib/apt/lists/*
 
+# new user
+ENV PUID='1000' \
+    PGID='1000' \
+    USER='user'
+
+# useradd and suoers
+RUN set -euxo \ 
+    && groupadd --gid "$PGID" "$USER"  \
+    && useradd --home-dir /home/$USER --shell /bin/bash --uid "$PUID" --gid "$PGID" "$USER"  \
+    && mkdir /home/$USER \
+    && chown -R $USER:$USER /home/$USER  \
+    && usermod -aG sudo "$USER"  \
+    && usermod -aG adm "$USER"  \
+    && usermod -aG audio "$USER"  \
+    && cp /etc/skel/.bashrc /home/user/  \
+    && mkdir -p /etc/sudoers.d  \
+    && echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/"${USER}" \
+    && chmod 0440 /etc/sudoers.d/"$USER" \
+    && cp /etc/skel/.bashrc /home/${USER}
+
 COPY scripts/bootstrap.sh /scripts/
+
+# copy desktop and terminal settings
+COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
+COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
 
 # remove empty space
 # :g/^ /norm dw
@@ -64,3 +88,5 @@ COPY scripts/bootstrap.sh /scripts/
 # cat /tmp/t.txt |sort
 
 # docker buildx build --progress=plain -t debian_lxde_xvfb -f Dockerfile_debian_xvfb "."
+
+# docker run -it debian_lxde_xvfb bash
