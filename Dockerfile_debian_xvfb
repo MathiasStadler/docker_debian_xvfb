@@ -1,4 +1,11 @@
-FROM debian:stable-slim
+# https://docs.docker.com/build/guide/multi-stage/
+
+FROM debian:stable-slim AS base
+
+ENV container=docker
+STOPSIGNAL SIGRTMIN+3
+VOLUME [ "/tmp", "/run", "/run/lock" ]
+WORKDIR /
 
 # FROM HERE
 # https://www.cyberciti.biz/faq/perl-warning-setting-locale-failed-in-debian-ubuntu/
@@ -34,8 +41,12 @@ RUN set -euxo \
 
 RUN set -euxo \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet locales \
-    locales-all \
-    lxde-core \
+    locales-all   
+
+FROM base AS display_env
+
+RUN set -euxo \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet lxde-core \
     lxde-icon-theme \
     lxsession-default-apps \
     lxterminal \
@@ -49,12 +60,17 @@ RUN set -euxo \
     xorgxrdp \
     xrdp \
     xvfb \
+    openssh-server \
+    sudo \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
     && apt-get --yes --auto-remove autoremove \
     && apt-get clean --yes \
     && rm --recursive --force /var/lib/apt/lists/*
+
+
+FROM base AS user_env
 
 # new user
 ENV PUID='1000' \
@@ -76,11 +92,33 @@ RUN set -euxo \
     && chmod 0440 /etc/sudoers.d/"$USER" \
     && cp /etc/skel/.bashrc /home/${USER}
 
+FROM base AS sripts_env
+
 COPY scripts/bootstrap.sh /scripts/
 
 # copy desktop and terminal settings
 COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
 COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
+
+
+FROM scratch AS client
+ENV container=docker
+STOPSIGNAL SIGRTMIN+3
+VOLUME [ "/tmp", "/run", "/run/lock" ]
+WORKDIR /
+
+COPY --from=base /etc /var /bin/bin/server /bin/
+
+
+# FROM HERE
+# https://dev.to/s1ntaxe770r/how-to-setup-ssh-within-a-docker-container-i5i
+# RUN service ssh start
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]
+
+
+ENTRYPOINT ["/bin/bash"]
+
 
 # remove empty space
 # :g/^ /norm dw
