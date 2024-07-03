@@ -123,7 +123,7 @@ WORKDIR /
 # https://dev.to/s1ntaxe770r/how-to-setup-ssh-within-a-docker-container-i5i
 # RUN service ssh start
 EXPOSE 22
-CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
+# CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
 
 
 ENTRYPOINT ["/bin/bash"]
@@ -134,6 +134,6 @@ ENTRYPOINT ["/bin/bash"]
 # sort
 # cat /tmp/t.txt |sort
 
-# docker buildx build --progress=plain -t debian_lxde_xvfb -f Dockerfile_debian_xvfb "."
+# docker buildx build --progress=plain -t debian_stage -f Dockerfile_debian_xvfb_stage "."
 
-# docker run -it --hostname stage debian_lxde_xvfb bash
+# docker run -it --hostname stage debian_stage bash
