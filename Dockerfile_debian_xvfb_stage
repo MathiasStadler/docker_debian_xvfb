@@ -119,6 +119,7 @@ COPY scripts/bootstrap.sh /scripts/
 COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
 COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
 
+COPY scripts /scripts/
 # 
 
 
