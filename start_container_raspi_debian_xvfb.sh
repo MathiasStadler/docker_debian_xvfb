@@ -11,3 +11,5 @@ docker run -it \
 -p 5959:5900 \
 --hostname multi_stage \
 debian_lxde_xvfb_multi_stage bash
+
+docker run -it -p 2222:22 -p 5959:5900 --hostname stage_r2 debian_stage_r2

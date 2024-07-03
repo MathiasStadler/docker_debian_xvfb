@@ -79,6 +79,13 @@ RUN --mount=type=cache,target=/var/cache/apt \
     ca-certificates \
     gzip \
     tar \
+    libasound2 \
+    libasound2-plugins \
+    pulseaudio \
+    pulseaudio-utils \
+    pulsemixer \
+    upower \
+    build-essential \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
