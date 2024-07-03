@@ -73,6 +73,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     xvfb \
     openssh-server \
     sudo \
+    chromium \
+    chromium-driver \
+    curl \
+    ca-certificates \
+    gzip \
+    tar \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
@@ -81,13 +87,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     && rm --recursive --force /var/lib/apt/lists/* 
 
 
-# chromiun
-RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
-    set -euxo \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet lxde-core \
-    chromium \
-    chromium-driver   
+
 # \
 # && rm -rf /var/cache/apt/archives /var/lib/apt/lists
 
@@ -113,6 +113,21 @@ RUN set -euxo \
     && echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/"${USER}" \
     && chmod 0440 /etc/sudoers.d/"$USER" \
     && cp /etc/skel/.bashrc /home/${USER}
+
+# install rust
+# RUN set -euxo \ 
+# https://releases.rs/
+#    && export RUST_VERSION=1.80.0  \
+#    && export TMP_RUST_DIR=/tmp/rust  \
+#    && mkdir -p "${TMP_RUST_DIR}" \
+#    && cd "${TMP_RUST_DIR}"  \
+#    && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs  \
+#    && ./install.sh --without=rust-docs  \
+#    && cd /tmp && rm -rf "${TMP_RUST_DIR}"  
+
+#install rust 
+RUN set -euxo \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 COPY scripts/bootstrap.sh /scripts/
 # copy desktop and terminal settings
@@ -142,5 +157,11 @@ ENTRYPOINT ["/bin/bash"]
 # cat /tmp/t.txt |sort
 
 # docker buildx build --progress=plain -t debian_stage -f Dockerfile_debian_xvfb_stage "."
+
+# docker buildx build --cache-from=type=local,src=/path/to/cache --cache-to=type=local,dest=/path/to/cache
+
+# docker buildx build --cache-from=type=local,src=/var/private_docker_cache --cache-to=type=local,dest=/var/private_docker_cache --progress=plain -t debian_stage_cache1 -f Dockerfile_debian_xvfb_stage "."
+
+
 
 # docker run -it --hostname stage debian_stage bash
