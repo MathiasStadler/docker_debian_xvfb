@@ -1,6 +1,7 @@
 # https://docs.docker.com/build/guide/multi-stage/
 
-FROM debian:stable-slim
+# FROM debian:stable-slim
+FROM debian:11.9-slim
 
 ENV container=docker
 STOPSIGNAL SIGRTMIN+3
@@ -85,7 +86,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     pulseaudio-utils \
     pulsemixer \
     upower \
-    build-essential \
+    build-essential \ 
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
@@ -131,10 +132,24 @@ RUN set -euxo \
 #    && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs  \
 #    && ./install.sh --without=rust-docs  \
 #    && cd /tmp && rm -rf "${TMP_RUST_DIR}"  
+# FROM HERE
+# https://stackoverflow.com/questions/64523323/how-do-we-install-rustc-cargo-for-all-the-users-in-the-same-linux-machine
+
+# armv7-unknown-linux-gnueabihf
+
+RUN set -euxo \ 
+&& export RUST_VERSION=1.79.0  \
+&& export TMP_RUST_DIR=/tmp/rust \
+&& mkdir -p "${TMP_RUST_DIR}"  \
+&& cd "${TMP_RUST_DIR}"  \
+&& curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-armv7-unknown-linux-gnueabihf.tar.gz" |  \
+&& tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs \
+&& ./install.sh --without=rust-docs \
+&& cd /tmp && rm -rf "${TMP_RUST_DIR}"
 
 #install rust 
-RUN set -euxo \
-    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+# RUN set -euxo \
+# && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 COPY scripts/bootstrap.sh /scripts/
 # copy desktop and terminal settings
@@ -169,6 +184,7 @@ ENTRYPOINT ["/bin/bash"]
 
 # docker buildx build --cache-from=type=local,src=/var/private_docker_cache --cache-to=type=local,dest=/var/private_docker_cache --progress=plain -t debian_stage_cache1 -f Dockerfile_debian_xvfb_stage "."
 
+# docker buildx build --progress=plain --no-cache  -t debian_stage_s8 -f Dockerfile_debian_xvfb_stage "."
 
 
 # docker run -it --hostname stage debian_stage bash
