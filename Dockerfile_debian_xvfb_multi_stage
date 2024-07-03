@@ -126,6 +126,6 @@ ENTRYPOINT ["/bin/bash"]
 # sort
 # cat /tmp/t.txt |sort
 
-# docker buildx build --progress=plain -t debian_lxde_xvfb -f Dockerfile_debian_xvfb "."
+# docker buildx build --progress=plain -t debian_lxde_xvfb_ms -f Dockerfile_debian_xvfb_multi_stage "."
 
-# docker run -it --hostname stage debian_lxde_xvfb bash
+# docker run -it --hostname multi_stage debian_lxde_xvfb_ms bash
