@@ -1,6 +1,6 @@
 # https://docs.docker.com/build/guide/multi-stage/
 
-# FROM debian:stable-slim
+FROM debian:stable-slim
 # FROM debian:11.9-slim
 # FROM debian:11.9
 
@@ -87,7 +87,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
     pulseaudio-utils \
     pulsemixer \
     upower \
-    build-essential \ 
+    build-essential \
+    lsof \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
