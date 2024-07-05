@@ -45,7 +45,7 @@ docker run -it \
 -p 5959:5900 \
 debian_stage_s8
 
-## w/o apparmor
+## w/o apparmor and workspace
 docker run -it \
 --tmpfs /run \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
@@ -54,12 +54,11 @@ docker run -it \
 --device /dev/dri \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
 --volume /dev/shm:/dev/shm \
---volume ./workspace:/home/user/workspace:rw \
 --env PULSE_SERVER=unix:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_s8_w/o_sec \
+--hostname debian_stage_s9_w/o_sec \
 -p 2222:22 \
 -p 5959:5900 \
-debian_stage_s8
+debian_stage_s9

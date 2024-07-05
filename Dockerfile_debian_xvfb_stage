@@ -89,6 +89,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
     upower \
     build-essential \
     lsof \
+    vim \
+    git \
+    htop \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
@@ -160,7 +163,9 @@ COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
 COPY scripts /scripts/
 # 
 
-
+# enable ssh passwort access
+RUN set -euxo \ 
+&& sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config
 
 
 
