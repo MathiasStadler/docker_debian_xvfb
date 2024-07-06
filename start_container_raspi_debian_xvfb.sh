@@ -62,3 +62,8 @@ docker run -it \
 -p 2222:22 \
 -p 5959:5900 \
 debian_stage_s10
+
+
+service --status-all
+service ssh start
+service ssh stop
