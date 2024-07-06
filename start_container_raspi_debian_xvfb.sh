@@ -69,3 +69,6 @@ service ssh start
 service ssh stop
 
 echo "${USER}:user" | chpasswd
+
+git config --global user.email "stadler-mathias@web.de"
+git config --global user.name "Mathias Stadler"
