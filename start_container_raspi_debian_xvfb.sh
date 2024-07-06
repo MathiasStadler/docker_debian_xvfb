@@ -67,3 +67,5 @@ debian_stage_s10
 service --status-all
 service ssh start
 service ssh stop
+
+echo "${USER}:user" | chpasswd

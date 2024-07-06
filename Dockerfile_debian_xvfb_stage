@@ -125,7 +125,8 @@ RUN set -euxo \
     && mkdir -p /etc/sudoers.d  \
     && echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/"${USER}" \
     && chmod 0440 /etc/sudoers.d/"$USER" \
-    && cp /etc/skel/.bashrc /home/${USER}
+    && cp /etc/skel/.bashrc /home/${USER} \
+    && echo "${USER}:user" | chpasswd
 
 # install rust
 # RUN set -euxo \ 
@@ -165,7 +166,7 @@ COPY scripts /scripts/
 
 # enable ssh passwort access
 RUN set -euxo \ 
-&& sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication no/g" /etc/ssh/sshd_config
+&& sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config
 
 
 
