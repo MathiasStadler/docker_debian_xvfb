@@ -58,10 +58,10 @@ docker run -it \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_s10_w/o_sec \
+--hostname debian_stage_s8_w/o_sec \
 -p 2222:22 \
 -p 5959:5900 \
-debian_stage_s10
+debian_stage_s8
 
 
 service --status-all
@@ -72,3 +72,5 @@ echo "${USER}:user" | chpasswd
 
 git config --global user.email "stadler-mathias@web.de"
 git config --global user.name "Mathias Stadler"
+
+sudo netstat -tulpn | grep LISTEN
