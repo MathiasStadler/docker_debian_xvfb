@@ -18,3 +18,7 @@ docker run -it \
 --security-opt=seccomp=unconfined \
 --mount type=bind,src="$(pwd)",target=/src \
 ubuntu bash
+
+
+## remove all containers /w status exited
+docker rm -v $(docker ps --filter status=exited -q)
