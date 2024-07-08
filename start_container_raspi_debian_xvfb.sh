@@ -45,7 +45,8 @@ docker run -it \
 -p 5959:5900 \
 debian_stage_s8
 
-## /w --host
+## /w docker run -it --userns host --privileged --security-opt=seccomp=unconfined --mount type=bind,src="$(pwd)",target=/src
+
 docker run -it \
 --security-opt apparmor=unconfined \
 --cap-add SYS_ADMIN \
@@ -72,7 +73,10 @@ docker run -it \
 --hostname debian_stage_s8_cap_complete \
 -p 2222:22 \
 -p 5959:5900 \
---host \
+--userns host \
+--privileged \ 
+--security-opt=seccomp=unconfined \
+--mount type=bind,src="$(pwd)",target=/home/user/folder \
 debian_stage_s8
 
 ## w/o apparmor and workspace
