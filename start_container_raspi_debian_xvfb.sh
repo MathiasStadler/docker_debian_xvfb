@@ -163,3 +163,6 @@ docker run -it \
 -p 2222:22 \
 -p 5959:5900 \
 debian_stage_s8
+
+# docker inspect <container id>
+# docker inspect 4afd7d8722be
