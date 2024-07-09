@@ -14,7 +14,7 @@ debian_lxde_xvfb_multi_stage bash
 
 docker run -it  -p 5900:5900 --hostname stage_r7 debian_stage_s7
 
-
+# su - user funzt
 # --cap-add FROM HERE
 # https://www.redhat.com/sysadmin/container-permission-denied-errors
 docker run -it \
