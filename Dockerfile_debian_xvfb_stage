@@ -132,6 +132,11 @@ RUN set -euxo \
     && cp /etc/skel/.bashrc /home/${USER} \
     && echo "${USER}:user" | chpasswd
 
+COPY scripts/.gitconfig /home/user
+
+RUN set -euxo \ 
+    && chown user:user /home/user/.gitconfig
+
 # install rust
 # RUN set -euxo \ 
 # https://releases.rs/
@@ -147,7 +152,10 @@ RUN set -euxo \
 
 # armv7-unknown-linux-gnueabihf
 
-RUN set -euxo \ 
+# RUN set -euxo \
+RUN --mount=type=cache,target=/var/cache/rust \
+    --mount=type=cache,target=/var/lib/rust \
+    set -euxo \ 
     && export RUST_VERSION=1.79.0  \
     && export TMP_RUST_DIR=/tmp/rust \
     && mkdir -p "${TMP_RUST_DIR}"  \

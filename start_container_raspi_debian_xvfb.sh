@@ -159,10 +159,10 @@ docker run -it \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_s8_cap_complete \
--p 2222:22 \
--p 5959:5900 \
-debian_stage_s8
+--hostname debian_stage_s8_3_cap_complete \
+-p 2223:22 \
+-p 5960:5900 \
+debian_stage_s8_3
 
 # docker inspect <container id>
 # docker inspect 4afd7d8722be

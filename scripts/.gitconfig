@@ -1,0 +1,7 @@
+[user]
+        email = email@example.com
+        name = Mathias
+[alias]
+        uncommit = reset
+[core]
+        editor = vi
