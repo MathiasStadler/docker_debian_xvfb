@@ -9,3 +9,4 @@ code --install-extension fleshywaffles.vs-code-clippy
 code --install-extension rust-lang.rust-analyzer
 code --install-extension serayuzgur.crates
 code --install-extension vadimcn.vscode-lldb
+code --install-extension streetsidesoftware.code-spell-checker
