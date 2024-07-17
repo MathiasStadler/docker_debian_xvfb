@@ -94,6 +94,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     htop \
     bash-completion \
     tree \
+    valgrind \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
