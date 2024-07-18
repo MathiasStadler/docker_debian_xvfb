@@ -154,14 +154,14 @@ docker run -it \
 --device /dev/dri \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
 --volume /dev/shm:/dev/shm \
---volume workspace_rust:/home/user/workspace_rust:rw \
+--volume workspace_rust_two:/home/user/workspace_rust:rw \
 --env PULSE_SERVER=unix:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_s8_3_cap_complete \
--p 2223:22 \
--p 5960:5900 \
+--hostname debian_stage_s8_5_cap_complete \
+-p 2225:22 \
+-p 5965:5900 \
 debian_stage_s8_3
 
 # docker inspect <container id>
