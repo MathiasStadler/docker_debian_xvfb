@@ -162,7 +162,7 @@ docker run -it \
 --hostname debian_stage_s8_5_cap_complete \
 -p 2225:22 \
 -p 5965:5900 \
-debian_stage_s8_3
+debian_stage_s8_3_commit
 
 # docker inspect <container id>
 # docker inspect 4afd7d8722be
