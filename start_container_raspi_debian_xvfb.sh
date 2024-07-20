@@ -159,10 +159,10 @@ docker run -it \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_s9 \
--p 2229:22 \
--p 5969:5900 \
-debian_stage_s9
+--hostname debian_stage_s9_commit_1 \
+-p 2230:22 \
+-p 5970:5900 \
+debian_stage_s9_commit_1
 
 # docker volumes
 docker volume create workspace_rust_three
