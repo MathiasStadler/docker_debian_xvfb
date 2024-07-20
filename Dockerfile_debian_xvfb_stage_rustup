@@ -1,0 +1,216 @@
+# https://docs.docker.com/build/guide/multi-stage/
+
+FROM debian:stable-slim
+# FROM debian:11.9-slim
+# FROM debian:11.9
+
+ENV container=docker
+STOPSIGNAL SIGRTMIN+3
+VOLUME [ "/tmp", "/run", "/run/lock" ]
+WORKDIR /
+
+# FROM HERE
+# https://www.cyberciti.biz/faq/perl-warning-setting-locale-failed-in-debian-ubuntu/
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_CTYPE="en_US.UTF-8" \
+    LC_NUMERIC="en_US.UTF-8" \
+    LC_TIME="en_US.UTF-8" \
+    LC_COLLATE="en_US.UTF-8" \
+    LC_MONETARY="en_US.UTF-8" \
+    LC_MESSAGES="en_US.UTF-8" \
+    LC_PAPER="en_US.UTF-8" \
+    LC_NAME="en_US.UTF-8" \
+    LC_ADDRESS="en_US.UTF-8" \
+    LC_TELEPHONE="en_US.UTF-8" \
+    LC_MEASUREMENT="en_US.UTF-8" \
+    LC_IDENTIFICATION="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8"
+
+# avoid user interaction
+ARG DEBIAN_FRONTEND=noninteractive 
+
+# CONFIGURE SHELL
+SHELL ["/usr/bin/bash", "-c"]
+
+# RUN --mount=type=cache,target=/var/cache/apt \
+#    --mount=type=cache,target=/var/lib/apt \
+#    apt-get update --yes
+
+# set language first
+RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    set -euxo \
+    && apt-get update --yes \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet  apt-utils \
+    locales \
+    apt-transport-https \
+    apt-utils \
+    locales \
+    locales-all
+
+
+# RUN --mount=type=cache,target=/var/cache/apt \
+#    --mount=type=cache,target=/var/lib/apt \
+#    set -euxo \
+#    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet locales \
+#    locales-all   
+
+RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    set -euxo \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet lxde-core \
+    lxde-icon-theme \
+    lxsession-default-apps \
+    lxterminal \
+    net-tools \
+    notification-daemon \
+    x11-apps \
+    x11-utils \
+    x11vnc \
+    x11-xserver-utils \
+    xdg-utils \
+    xorgxrdp \
+    xrdp \
+    xvfb \
+    openssh-server \
+    sudo \
+    chromium \
+    chromium-driver \
+    curl \
+    ca-certificates \
+    gzip \
+    tar \
+    libasound2 \
+    libasound2-plugins \
+    pulseaudio \
+    pulseaudio-utils \
+    pulsemixer \
+    upower \
+    build-essential \
+    lsof \
+    vim \
+    git \
+    htop \
+    bash-completion \
+    tree \
+    valgrind \
+    && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
+    && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
+    && apt-get --yes autoclean \ 
+    && apt-get --yes --auto-remove autoremove \
+    && apt-get clean --yes \
+    && rm --recursive --force /var/lib/apt/lists/* 
+
+# FROM HERE
+# bash-completion
+# https://unix.stackexchange.com/questions/312456/debian-apt-not-apt-get-autocompletion-not-working
+
+# \
+# && rm -rf /var/cache/apt/archives /var/lib/apt/lists
+
+# FROM HERE
+# https://askubuntu.com/questions/1050800/how-do-i-remove-the-apt-package-index
+
+# # new user
+ENV PUID='1000' \
+    PGID='1000' \
+    USER='user'
+
+# useradd and suoers
+RUN set -euxo \ 
+    && groupadd --gid "$PGID" "$USER"  \
+    && useradd --home-dir /home/$USER --shell /bin/bash --uid "$PUID" --gid "$PGID" "$USER"  \
+    && mkdir /home/$USER \
+    && chown -R $USER:$USER /home/$USER  \
+    && usermod -aG sudo "$USER"  \
+    && usermod -aG adm "$USER"  \
+    && usermod -aG audio "$USER"  \
+    && cp /etc/skel/.bashrc /home/user/  \
+    && mkdir -p /etc/sudoers.d  \
+    && echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/"${USER}" \
+    && chmod 0440 /etc/sudoers.d/"$USER" \
+    && cp /etc/skel/.bashrc /home/${USER} \
+    && echo "${USER}:user" | chpasswd
+
+COPY scripts/.gitconfig /home/user
+
+RUN set -euxo \ 
+    && chown user:user /home/user/.gitconfig
+
+# install rust
+# RUN set -euxo \ 
+# https://releases.rs/
+#    && export RUST_VERSION=1.80.0  \
+#    && export TMP_RUST_DIR=/tmp/rust  \
+#    && mkdir -p "${TMP_RUST_DIR}" \
+#    && cd "${TMP_RUST_DIR}"  \
+#    && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs  \
+#    && ./install.sh --without=rust-docs  \
+#    && cd /tmp && rm -rf "${TMP_RUST_DIR}"  
+# FROM HERE
+# https://stackoverflow.com/questions/64523323/how-do-we-install-rustc-cargo-for-all-the-users-in-the-same-linux-machine
+
+# armv7-unknown-linux-gnueabihf
+
+# RUN set -euxo \
+
+## rust via manual download
+# RUN --mount=type=cache,target=/var/cache/rust \
+#     --mount=type=cache,target=/var/lib/rust \
+#     set -euxo \ 
+#     && export RUST_VERSION=1.79.0  \
+#     && export TMP_RUST_DIR=/tmp/rust \
+#     && mkdir -p "${TMP_RUST_DIR}"  \
+#     && cd "${TMP_RUST_DIR}"  \
+#     && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-armv7-unknown-linux-gnueabihf.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs \
+#     && ./install.sh --without=rust-docs \
+#     && cd /tmp && rm -rf "${TMP_RUST_DIR}"
+
+# install rust via rustup 
+RUN set -euxo \
+&& curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+COPY scripts/bootstrap.sh /scripts/
+# copy desktop and terminal settings
+COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
+COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
+
+COPY scripts /scripts/
+# 
+
+# enable ssh passwort access
+RUN set -euxo \ 
+    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config \
+    && service ssh start
+
+
+# FROM HERE
+# https://dev.to/s1ntaxe770r/how-to-setup-ssh-within-a-docker-container-i5i
+# RUN service ssh start
+EXPOSE 22
+# CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
+
+
+ENTRYPOINT ["/bin/bash"]
+
+
+# remove empty space
+# :g/^ /norm dw
+# sort
+# cat /tmp/t.txt |sort
+
+# docker buildx build --progress=plain -t debian_stage -f Dockerfile_debian_xvfb_stage "."
+
+# docker buildx build --cache-from=type=local,src=/path/to/cache --cache-to=type=local,dest=/path/to/cache
+
+# docker buildx build --cache-from=type=local,src=/var/private_docker_cache --cache-to=type=local,dest=/var/private_docker_cache --progress=plain -t debian_stage_cache1 -f Dockerfile_debian_xvfb_stage "."
+
+# docker buildx build --progress=plain --no-cache  -t debian_stage_s8 -f Dockerfile_debian_xvfb_stage "."
+
+# /w rustup
+# docker buildx build --progress=plain --no-cache  -t debian_stage_s9 -f Dockerfile_debian_xvfb_stage_rustup "."
+
+
+
+# docker run -it --hostname stage debian_stage bash
