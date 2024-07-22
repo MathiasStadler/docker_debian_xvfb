@@ -160,9 +160,9 @@ docker run -it \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
 --hostname debian_stage_v10 \
--p 2235:22 \
--p 5975:5900 \
-debian_stage_s10_1
+-p 2236:22 \
+-p 5976:5900 \
+debian_stage_v12_4
 
 # docker volumes
 docker volume create workspace_rust_three

@@ -133,14 +133,18 @@ RUN set -euxo \
     && cp /etc/skel/.bashrc /home/${USER} \
     && echo "${USER}:user" | chpasswd
 
-RUN set -euxo \ 
-    && cp /root/.cargo /home/"${USER}" \
-    && echo ". ~/.cargo/env" >> /home/"${USER}"/.bashrc    
+# RUN set -euxo \ 
+#     && cp /root/.cargo /home/"${USER}" \
+#     && echo ". ~/.cargo/env" >> /home/"${USER}"/.bashrc    
 
-COPY scripts/.gitconfig /home/user
+# . "$HOME/.cargo/env"
+
+COPY scripts/.gitconfig /home/user 
+COPY scripts/start_sshd.sh /script/start_sshd.sh
+
 
 RUN set -euxo \ 
-    && chown user:user /home/user/.gitconfig
+    && chown "${USER}":"${USER}" /home/user/.gitconfig
 
 # install rust
 # RUN set -euxo \ 
@@ -175,6 +179,12 @@ RUN set -euxo \
 RUN set -euxo \
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
+# COPY /root/.cargo /home/"${USER}"/
+
+# RUN chmod -R 0777 /home/"${USER}"/workspace_rust/
+
+
+
 COPY scripts/bootstrap.sh /scripts/
 # copy desktop and terminal settings
 COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
@@ -185,8 +195,9 @@ COPY scripts /scripts/
 
 # enable ssh passwort access
 RUN set -euxo \ 
-    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config \
-    && service ssh start
+    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
+    ## wrong place not during the build phase
+    ## && service ssh start
 
 
 # FROM HERE
@@ -196,7 +207,18 @@ EXPOSE 22
 # CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
 
 
-ENTRYPOINT ["/bin/bash"]
+COPY scripts/start_up.sh /scripts
+RUN chmod +x /scripts/start_up.sh
+
+# 
+
+RUN chmod 0755 /scripts/start_sshd.sh
+RUN chmod +x /scripts/start_up.sh
+ENTRYPOINT ["/scripts/start_up.sh "]
+
+CMD ["/usr/bin/bash"]
+
+# https://devopscube.com/run-scripts-docker-arguments/ 
 
 
 # remove empty space
@@ -218,3 +240,5 @@ ENTRYPOINT ["/bin/bash"]
 
 
 # docker run -it --hostname stage debian_stage bash
+
+# --entrypoint bash 
