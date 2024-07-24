@@ -196,8 +196,8 @@ COPY scripts /scripts/
 # enable ssh passwort access
 RUN set -euxo \ 
     && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
-    ## wrong place not during the build phase
-    ## && service ssh start
+## wrong place not during the build phase
+## && service ssh start
 
 
 # FROM HERE
@@ -210,10 +210,37 @@ EXPOSE 22
 # COPY scripts/start_up.sh /scripts
 # RUN chmod +x /scripts/start_up.sh
 
-# 
+# RUN cp -r "/root/.cargo" "/home/user"
+# RUN ls -ltrh /home/user
+
+
+
+# RUN export PATH="/home/user/.cargo/bin:$PATH"
+# RUN  export PATH="/home/user/.cargo/bin:$PATH" >>/home/user/.bashrc
+RUN echo "export PATH=\"/home/user/.cargo/bin:$PATH\"" >>/home/user/.bashrc
+
+RUN touch /home/user/.profile
+RUN echo "export PATH=\"/home/user/.cargo/bin:$PATH\"" >>/home/user/.profile
+
+# USER settings
+USER user
+RUN echo "I am $HOME, with uid $UID"
+
+# RUN set -euxo \
+#    && cd /home/user \
+#    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN rustup default stable
+# RUN rustup update
+# RUN . .cargo/env
+# RUN export PATH="$HOME/.cargo/bin:$PATH"
+
+USER root
+RUN echo "I am $HOME, with uid $UID"
+
 
 # RUN chmod 0755 /scripts/start_sshd.sh
-# RUN chmod +x /scripts/start_up.sh
+RUN chmod +x /scripts/bootstrap.sh
 ENTRYPOINT ["/scripts/bootstrap.sh"]
 
 # CMD ["/usr/bin/bash"]

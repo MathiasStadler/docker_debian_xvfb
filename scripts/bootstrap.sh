@@ -69,11 +69,23 @@ install_xeyes(){
 
 setup_rust_path(){
 . "$HOME/.cargo/env"
+# copy cargo env to /home/user
+# mkdir -p /home/user/.cargo
+# cp -r "$HOME/.cargo" "/home/user"
+# sudo -H -u user bash -c 'echo "I am $USER, with uid $UID"'
+# sudo -H -u user bash -c '. "$HOME/.cargo/env"'
+# sudo -H -u user bash -c 'export PATH="$HOME/.cargo/bin:$PATH"'
 
+}
+
+start_sshd(){
+    service ssh start
+    service ssh status
 }
 
 
 setup_rust_path &
+start_sshd &
 launch_xvfb &
 launch_window_manager &
 run_vnc_server &
