@@ -210,7 +210,7 @@ EXPOSE 22
 # COPY scripts/start_up.sh /scripts
 # RUN chmod +x /scripts/start_up.sh
 
-# RUN cp -r "/root/.cargo" "/home/user"
+RUN cp -r "/root/.cargo" "/home/user"
 # RUN ls -ltrh /home/user
 
 
@@ -231,7 +231,7 @@ RUN echo "I am $HOME, with uid $UID"
 #    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN rustup default stable
-# RUN rustup update
+RUN rustup update
 # RUN . .cargo/env
 # RUN export PATH="$HOME/.cargo/bin:$PATH"
 
