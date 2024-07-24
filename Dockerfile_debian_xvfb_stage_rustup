@@ -140,7 +140,7 @@ RUN set -euxo \
 # . "$HOME/.cargo/env"
 
 COPY scripts/.gitconfig /home/user 
-COPY scripts/start_sshd.sh /script/start_sshd.sh
+COPY scripts/start_sshd.sh /scripts/start_sshd.sh
 
 # copy git configuration
 RUN set -euxo \ 
