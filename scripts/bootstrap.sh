@@ -67,6 +67,13 @@ install_xeyes(){
     xeyes &
 }
 
+setup_rust_path(){
+. "$HOME/.cargo/env"
+
+}
+
+
+setup_rust_path &
 launch_xvfb &
 launch_window_manager &
 run_vnc_server &

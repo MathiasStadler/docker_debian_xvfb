@@ -142,7 +142,7 @@ RUN set -euxo \
 COPY scripts/.gitconfig /home/user 
 COPY scripts/start_sshd.sh /script/start_sshd.sh
 
-
+# copy git configuration
 RUN set -euxo \ 
     && chown "${USER}":"${USER}" /home/user/.gitconfig
 
@@ -207,16 +207,16 @@ EXPOSE 22
 # CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
 
 
-COPY scripts/start_up.sh /scripts
-RUN chmod +x /scripts/start_up.sh
+# COPY scripts/start_up.sh /scripts
+# RUN chmod +x /scripts/start_up.sh
 
 # 
 
-RUN chmod 0755 /scripts/start_sshd.sh
-RUN chmod +x /scripts/start_up.sh
-ENTRYPOINT ["/scripts/start_up.sh "]
+# RUN chmod 0755 /scripts/start_sshd.sh
+# RUN chmod +x /scripts/start_up.sh
+ENTRYPOINT ["/scripts/bootstrap.sh"]
 
-CMD ["/usr/bin/bash"]
+# CMD ["/usr/bin/bash"]
 
 # https://devopscube.com/run-scripts-docker-arguments/ 
 
@@ -232,7 +232,7 @@ CMD ["/usr/bin/bash"]
 
 # docker buildx build --cache-from=type=local,src=/var/private_docker_cache --cache-to=type=local,dest=/var/private_docker_cache --progress=plain -t debian_stage_cache1 -f Dockerfile_debian_xvfb_stage "."
 
-# docker buildx build --progress=plain --no-cache  -t debian_stage_s8 -f Dockerfile_debian_xvfb_stage "."
+# docker buildx build --progress=plain --no-cache  -t debian_stage_next -f Dockerfile_debian_xvfb_stage "."
 
 # /w rustup
 # docker buildx build --progress=plain --no-cache  -t debian_stage_s9 -f Dockerfile_debian_xvfb_stage_rustup "."
