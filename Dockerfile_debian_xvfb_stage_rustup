@@ -211,6 +211,10 @@ EXPOSE 22
 # RUN chmod +x /scripts/start_up.sh
 
 RUN cp -r "/root/.cargo" "/home/user"
+
+#set user rights
+RUN chown -R "user:user" "/home/user/.cargo/"
+
 # RUN ls -ltrh /home/user
 
 
