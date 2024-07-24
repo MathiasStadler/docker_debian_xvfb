@@ -230,8 +230,8 @@ RUN echo "I am $HOME, with uid $UID"
 #    && cd /home/user \
 #    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-RUN rustup default stable
-RUN rustup update
+RUN /home/user/.cargo/bin/rustup default stable
+RUN /home/user/.cargo/bin/rustup update
 # RUN . .cargo/env
 # RUN export PATH="$HOME/.cargo/bin:$PATH"
 
