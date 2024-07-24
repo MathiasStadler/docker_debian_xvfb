@@ -241,7 +241,9 @@ RUN echo "I am $HOME, with uid $UID"
 
 # RUN chmod 0755 /scripts/start_sshd.sh
 RUN chmod +x /scripts/bootstrap.sh
-ENTRYPOINT ["/scripts/bootstrap.sh"]
+# ENTRYPOINT ["/scripts/bootstrap.sh"]
+
+ENTRYPOINT ["/usr/bin/bash"]
 
 # CMD ["/usr/bin/bash"]
 
