@@ -259,7 +259,7 @@ ENTRYPOINT ["/usr/bin/bash"]
 # sort
 # cat /tmp/t.txt |sort
 
-# docker buildx build --progress=plain -t debian_stage -f Dockerfile_debian_xvfb_stage_rustup "."
+# docker buildx build --progress=plain -t debian_stage_rustup_next -f Dockerfile_debian_xvfb_stage_rustup "."
 
 # docker buildx build --cache-from=type=local,src=/path/to/cache --cache-to=type=local,dest=/path/to/cache
 
