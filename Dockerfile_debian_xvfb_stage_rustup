@@ -185,6 +185,7 @@ RUN set -euxo \
 
 
 
+
 COPY scripts/bootstrap.sh /scripts/
 # copy desktop and terminal settings
 COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
