@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set -euxo
+
 launch_xvfb() {
     # Set defaults if the user did not specify envs.
     export DISPLAY=${XVFB_DISPLAY:-:1}
@@ -11,6 +13,7 @@ launch_xvfb() {
 
     # Start and wait for either Xvfb to be fully up,
     # or we hit the timeout.
+    # note the  ampersand
     Xvfb "${DISPLAY}" -screen "${screen}" "${resolution}" &
     local loopCount=0
     until xdpyinfo -display "${DISPLAY}" > /dev/null 2>&1
@@ -26,6 +29,7 @@ launch_xvfb() {
 }
 
 launch_window_manager() {
+    # note the  ampersand
     export DISPLAY=:1
     xrdb "$HOME"/.Xresources
     xsetroot -solid grey
@@ -54,7 +58,7 @@ run_vnc_server() {
     else
         echo "[WARN] The VNC server will NOT ask for a password."
     fi
-
+    # note the  ampersand
     x11vnc -ncache 10 -display ${DISPLAY} -forever "${passwordArgument}"  &
     # x11vnc -xkb -display ${DISPLAY} -forever ${passwordArgument} &
     wait $!
@@ -63,6 +67,7 @@ run_vnc_server() {
 install_xeyes(){
     # apt update
     # apt install --yes x11-apps
+    # note the  ampersand
     export DISPLAY=:1
     xeyes &
 }
@@ -82,6 +87,10 @@ start_sshd(){
     service ssh status
 }
 
+chown_workspace_rust(){
+    chown -R user:user /home/user/workspace_rust/
+}
+
 
 # setup_rust_path &
 start_sshd &
@@ -89,3 +98,4 @@ launch_xvfb &
 launch_window_manager &
 run_vnc_server &
 install_xeyes &
+chown_workspace_rust &

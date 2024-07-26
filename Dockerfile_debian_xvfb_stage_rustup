@@ -69,7 +69,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
     tar \
     libasound2 \
     libasound2-plugins \
-    pulseaudio \
+    pulseaudio \RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    set -euxo \
     pulseaudio-utils \
     pulsemixer \
     upower \
@@ -115,6 +117,7 @@ COPY scripts/.gitconfig /home/user
 RUN set -euxo \ 
     && chown "${USER}":"${USER}" /home/user/.gitconfig
 
+   
 # old please remove
 # COPY scripts/start_sshd.sh /scripts/start_sshd.sh
 
@@ -158,9 +161,9 @@ RUN echo "I am $HOME, with uid $UID"
 
 RUN set -euxo \ 
 && /home/user/.cargo/bin/rustup default stable \
-&& /home/user/.cargo/bin/rustup update \
-&& /home/user/.cargo/bin/cargo install cargo-cache \
-&& /home/user/.cargo/bin/cargo cache
+&& /home/user/.cargo/bin/rustup update 
+# && /home/user/.cargo/bin/cargo install cargo-cache \
+# && /home/user/.cargo/bin/cargo cache
 
 # user end
 
@@ -170,7 +173,7 @@ RUN echo "I am $HOME, with uid $UID"
 RUN chmod +x /scripts/bootstrap.sh
 # ENTRYPOINT ["/scripts/bootstrap.sh"]
 
-ENTRYPOINT ["/usr/bin/bash"]
+ENTRYPOINT ["/scripts/bootstrap.sh"]
 
 # CMD ["/usr/bin/bash"]
 
@@ -183,6 +186,8 @@ ENTRYPOINT ["/usr/bin/bash"]
 # cat /tmp/t.txt |sort
 
 # docker buildx build --progress=plain -t debian_stage_rustup_next -f Dockerfile_debian_xvfb_stage_rustup "."
+
+# docker buildx build --progress=plain --no-cache -t debian_stage_rustup_next -f Dockerfile_debian_xvfb_stage_rustup "."
 
 # docker buildx build --cache-from=type=local,src=/path/to/cache --cache-to=type=local,dest=/path/to/cache
 
