@@ -172,7 +172,7 @@ RUN set -euxo \
 #     && ./install.sh --without=rust-docs \
 #     && cd /tmp && rm -rf "${TMP_RUST_DIR}"
 
-#install rust 
+#install rust system wide
 RUN set -euxo \
 && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
