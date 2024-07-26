@@ -183,9 +183,9 @@ RUN set -euxo \
     && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal 
 # for cargo crates index NOT inside production system
 
-# RUN set -euxo \
-#     && mkdir /opt/rust/registry \
-#     && chmod o+xrw /opt/rust/registry
+RUN set -euxo \
+     && mkdir /opt/rust/registry \
+     && chmod -R o+xrw /opt/rust/registry
 
 # --profile minimal
 # https://rust-lang.github.io/rustup/concepts/profiles.html
