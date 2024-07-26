@@ -134,11 +134,11 @@ RUN set -euxo \
     && echo "${USER}:user" | chpasswd \
     && cp /etc/skel/.profile /home/"${USER}"
 
-    # RUN set -euxo \ 
-    # && cp /root/.cargo /home/"${USER}" \
-    # && echo ". ~/.cargo/env" >> /home/"${USER}"/.bashrc
+# RUN set -euxo \ 
+# && cp /root/.cargo /home/"${USER}" \
+# && echo ". ~/.cargo/env" >> /home/"${USER}"/.bashrc
 
-    
+
 
 COPY scripts/.gitconfig /home/user 
 
@@ -176,11 +176,11 @@ RUN set -euxo \
 # FROM HERE https://github.com/rust-lang/rustup/issues/1085
 # root part
 RUN set -euxo \
-RUSTUP_HOME=/opt/rust \
-export RUSTUP_HOME \
-CARGO_HOME=/opt/rust \
-export CARGO_HOME \
-curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+    && RUSTUP_HOME=/opt/rust \
+    && export RUSTUP_HOME \
+    && CARGO_HOME=/opt/rust \
+    && export CARGO_HOME \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 
 RUN touch /usr/local/bin/rustc
 RUN echo "#!/bin/sh" > /usr/local/bin/rustc
@@ -190,7 +190,7 @@ RUN echo "RUSTUP_HOME=/opt/rust exec /opt/rust/bin/${0##*/} \"$@\"" >> /usr/loca
 # RUN set -euxo \
 # && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-COPY scripts/bootstrap.sh /scripts/
+# COPY scripts/bootstrap.sh /scripts/
 # copy desktop and terminal settings
 COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
 COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
@@ -200,8 +200,8 @@ COPY scripts /scripts/
 
 # enable ssh passwort access
 RUN set -euxo \ 
-    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config \
-    && service ssh start
+    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
+    # && service ssh start
 
 
 # FROM HERE
@@ -210,8 +210,13 @@ RUN set -euxo \
 EXPOSE 22
 # CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
 
+COPY scripts/bootstrap.sh /scripts/
+RUN set -euxo \
+    && chown +x /scripts/bootstrap.sh
 
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/scripts/bootstrap.sh"]
+CMD ["/scripts/bootstrap.sh"]
 
 
 # remove empty space

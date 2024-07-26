@@ -162,7 +162,7 @@ docker run -it \
 --hostname debian_stage_next \
 -p 2245:22 \
 -p 5945:5900 \
-debian_stage_rustup_next
+debian_stage_next
 
 # debian_stage_v12_4
 
