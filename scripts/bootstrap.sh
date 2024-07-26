@@ -96,7 +96,7 @@ chown_workspace_rust(){
 start_sshd &
 launch_xvfb &
 launch_window_manager &
-run_vnc_server &
 install_xeyes &
 chown_workspace_rust &
-exec "$@"
+run_vnc_server 
+# exec "$@"

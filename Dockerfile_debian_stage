@@ -182,10 +182,43 @@ RUN set -euxo \
     && export CARGO_HOME \
     && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 
-RUN touch /usr/local/bin/rustc
-RUN echo "#!/bin/sh" > /usr/local/bin/rustc
-RUN echo "RUSTUP_HOME=/opt/rust exec /opt/rust/bin/${0##*/} \"$@\"" >> /usr/local/bin/rustc
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/etc/profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/etc/profile
 
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/root/.profile 
+
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.bashrc \
+    && echo "export CARGO_HOME=/opt/rust" >>/root/.bashrc 
+
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.profile 
+
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.bashrc \
+    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.bashrc 
+
+
+
+# set cargo path for ROOT amd USER
+# set command cargo to path
+RUN set -euxo \    
+    #  && touch /usr/local/bin/rustc \
+    #  && echo "#!/bin/sh" > /usr/local/bin/rustc \
+    #  && echo "RUSTUP_HOME=/opt/rust exec /opt/rust/bin/\${0##*/} \"\$@\"" >> /usr/local/bin/rustc \
+    && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/root/.bashrc \
+    && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/root/.profile \
+    && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.bashrc \
+    && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.profile
+# && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.bashrc \
+# && touch /home/user/.profile \
+# && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.profile 
+
+# /opt/rust/bin
 
 # RUN set -euxo \
 # && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -201,7 +234,7 @@ COPY scripts /scripts/
 # enable ssh passwort access
 RUN set -euxo \ 
     && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
-    # && service ssh start
+# && service ssh start
 
 
 # FROM HERE
@@ -212,11 +245,11 @@ EXPOSE 22
 
 COPY scripts/bootstrap.sh /scripts/
 RUN set -euxo \
-    && chown +x /scripts/bootstrap.sh
+    && chmod +x /scripts/bootstrap.sh
 
 # ENTRYPOINT ["/bin/bash"]
 ENTRYPOINT ["/scripts/bootstrap.sh"]
-CMD ["/scripts/bootstrap.sh"]
+# CMD ["/scripts/bootstrap.sh"]
 
 
 # remove empty space

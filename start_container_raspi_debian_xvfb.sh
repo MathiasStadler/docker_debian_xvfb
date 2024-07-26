@@ -170,6 +170,9 @@ debian_stage_next
 docker volume create workspace_rust_five
 docker volume ls
 
+# clean all stopped conatainer
+docker rm -v $(docker ps --filter status=exited -q)
+
 # debian_stage_s8_3_commit
 
 # docker inspect <container id>
