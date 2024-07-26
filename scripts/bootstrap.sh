@@ -91,6 +91,12 @@ chown_workspace_rust(){
     chown -R user:user /home/user/workspace_rust/
 }
 
+start_chromiumdriver(){
+# start under user
+# https://unix.stackexchange.com/questions/232669/how-can-i-run-a-program-as-another-user-in-every-way
+sh +x /scripts/start_chromiumdriver.sh 
+runuser -u user -- /scripts/start_chromedriver.sh
+}
 
 # setup_rust_path &
 start_sshd &
@@ -98,5 +104,7 @@ launch_xvfb &
 launch_window_manager &
 install_xeyes &
 chown_workspace_rust &
+start_chromiumdriver &
+# run_vnc_server always as last command
 run_vnc_server 
 # exec "$@"
