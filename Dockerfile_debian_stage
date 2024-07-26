@@ -180,7 +180,10 @@ RUN set -euxo \
     && export RUSTUP_HOME \
     && CARGO_HOME=/opt/rust \
     && export CARGO_HOME \
-    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal \
+    # for cargo crates index NOT inside production system
+    && mkdir /opt/rust/registry \
+    && chmod o+xrw /opt/rust/registry
 
 # --profile minimal
 # https://rust-lang.github.io/rustup/concepts/profiles.html
