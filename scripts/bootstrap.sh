@@ -60,7 +60,7 @@ run_vnc_server() {
         echo "[WARN] The VNC server will NOT ask for a password."
     fi
     # note the  ampersand
-    x11vnc -ncache 10 -display ${DISPLAY} -forever "${passwordArgument}"  &
+    x11vnc -ncache 10 -display ${DISPLAY} -forever "${passwordArgument}" -geometry "${resolution}"  &
     # x11vnc -xkb -display ${DISPLAY} -forever ${passwordArgument} &
     wait $!
 }
