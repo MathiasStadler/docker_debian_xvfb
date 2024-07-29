@@ -30,9 +30,9 @@ docker run -it \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_stage_next \
--p 2245:22 \
--p 5945:5900 \
+--hostname debian_thinkorswim \
+-p 2246:22 \
+-p 5946:5900 \
 debian_stage_next
 
 # docker volumes
