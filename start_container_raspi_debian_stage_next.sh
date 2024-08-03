@@ -25,14 +25,14 @@ docker run -it \
 --device /dev/dri \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
 --volume /dev/shm:/dev/shm \
---volume workspace_stock_one:/home/user/workspace_rust:rw \
+--volume workspace_stock_two:/home/user/workspace_rust:rw \
 --env PULSE_SERVER=unix:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
---hostname debian_thinkorswim \
--p 2246:22 \
--p 5946:5900 \
+--hostname debian_stock_two \
+-p 2248:22 \
+-p 5948:5900 \
 debian_stage_next
 
 # docker volumes
