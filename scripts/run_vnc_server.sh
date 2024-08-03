@@ -1,12 +1,12 @@
+#!/bin/bash
+
 run_vnc_server() {
     export DISPLAY=:1
     local passwordArgument='-nopw'
 
-    if [ -n "${VNC_SERVER_PASSWORD}" ]
-    then
+    if [ -n "${VNC_SERVER_PASSWORD}" ]; then
         local passwordFilePath="${HOME}/x11vnc.pass"
-        if ! x11vnc -storepasswd "${VNC_SERVER_PASSWORD}" "${passwordFilePath}"
-        then
+        if ! x11vnc -storepasswd "${VNC_SERVER_PASSWORD}" "${passwordFilePath}"; then
             echo "[ERROR] Failed to store x11vnc password."
             exit 1
         fi
@@ -16,9 +16,9 @@ run_vnc_server() {
         echo "[WARN] The VNC server will NOT ask for a password."
     fi
     # note the  ampersand
-    x11vnc -ncache 10 -display ${DISPLAY} -forever "${passwordArgument}" -geometry "${resolution}"  &
+    x11vnc -ncache 10 -display ${DISPLAY} -forever "${passwordArgument}" -geometry "${resolution}" &
     # x11vnc -xkb -display ${DISPLAY} -forever ${passwordArgument} &
     wait $!
 }
 
-run_vnc_server  
+run_vnc_server
