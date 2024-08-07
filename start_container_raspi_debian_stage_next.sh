@@ -25,19 +25,30 @@ docker run -it \
 --device /dev/dri \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
 --volume /dev/shm:/dev/shm \
---volume workspace_polars:/home/user/workspace_rust:rw \
+--volume workspace_rust_plotly:/home/user/workspace_rust:rw \
 --env PULSE_SERVER=unix:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
 --group-add "$(getent group audio | cut -d: -f3)" \
 --hostname debian_stock_two \
--p 2248:22 \
--p 5948:5900 \
+-p 2258:22 \
+-p 5958:5900 \
 debian_stage_next
 
 # docker volumes
 # docker volume create workspace_rust_five
 # docker volume ls
+
+# How to determine what containers use the docker volume?
+# docker ps -a --filter volume=VOLUME_NAME_OR_MOUNT_POINT
+# docker ps -a --filter volume=workspace_rust_plotly
+# loop over volumes
+# for v in $(docker volume ls --format "{{.Name}}")
+# do
+#  containers="$(docker ps -a --filter volume=$v --format '{{.Names}}' | tr '\n' ',')"
+#  echo "volume $v is used by $containers"
+# done
+
 
 # clean all stopped conatainer
 # docker rm -v $(docker ps --filter status=exited -q)
