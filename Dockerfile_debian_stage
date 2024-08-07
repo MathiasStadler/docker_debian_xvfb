@@ -1,8 +1,5 @@
-# https://docs.docker.com/build/guide/multi-stage/
 
 FROM debian:stable-slim
-# FROM debian:11.9-slim
-# FROM debian:11.9
 
 ENV container=docker
 STOPSIGNAL SIGRTMIN+3
@@ -33,10 +30,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 # CONFIGURE SHELL
 SHELL ["/usr/bin/bash", "-c"]
 
-# RUN --mount=type=cache,target=/var/cache/apt \
-#    --mount=type=cache,target=/var/lib/apt \
-#    apt-get update --yes
-
 # set language first
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
@@ -48,13 +41,6 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-utils \
     locales \
     locales-all
-
-
-# RUN --mount=type=cache,target=/var/cache/apt \
-#    --mount=type=cache,target=/var/lib/apt \
-#    set -euxo \
-#    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet locales \
-#    locales-all   
 
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
@@ -102,17 +88,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     && apt-get clean --yes \
     && rm --recursive --force /var/lib/apt/lists/* 
 
-# FROM HERE
-# bash-completion
-# https://unix.stackexchange.com/questions/312456/debian-apt-not-apt-get-autocompletion-not-working
-
-# \
-# && rm -rf /var/cache/apt/archives /var/lib/apt/lists
-
-# FROM HERE
-# https://askubuntu.com/questions/1050800/how-do-i-remove-the-apt-package-index
-
-# # new user
+# new user
 ENV PUID='1000' \
     PGID='1000' \
     USER='user'
@@ -134,43 +110,10 @@ RUN set -euxo \
     && echo "${USER}:user" | chpasswd \
     && cp /etc/skel/.profile /home/"${USER}"
 
-# RUN set -euxo \ 
-# && cp /root/.cargo /home/"${USER}" \
-# && echo ". ~/.cargo/env" >> /home/"${USER}"/.bashrc
-
-
-
 COPY scripts/.gitconfig /home/user 
 
 RUN set -euxo \ 
     && chown user:user /home/user/.gitconfig
-
-# install rust
-# RUN set -euxo \ 
-# https://releases.rs/
-#    && export RUST_VERSION=1.80.0  \
-#    && export TMP_RUST_DIR=/tmp/rust  \
-#    && mkdir -p "${TMP_RUST_DIR}" \
-#    && cd "${TMP_RUST_DIR}"  \
-#    && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs  \
-#    && ./install.sh --without=rust-docs  \
-#    && cd /tmp && rm -rf "${TMP_RUST_DIR}"  
-# FROM HERE
-# https://stackoverflow.com/questions/64523323/how-do-we-install-rustc-cargo-for-all-the-users-in-the-same-linux-machine
-
-# armv7-unknown-linux-gnueabihf
-
-# RUN set -euxo \
-# RUN --mount=type=cache,target=/var/cache/rust \
-#     --mount=type=cache,target=/var/lib/rust \
-#     set -euxo \ 
-#     && export RUST_VERSION=1.79.0  \
-#     && export TMP_RUST_DIR=/tmp/rust \
-#     && mkdir -p "${TMP_RUST_DIR}"  \
-#     && cd "${TMP_RUST_DIR}"  \
-#     && curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-armv7-unknown-linux-gnueabihf.tar.gz" | tar xvzf - -C "${TMP_RUST_DIR}" --strip-components=1 --exclude=rust-docs \
-#     && ./install.sh --without=rust-docs \
-#     && cd /tmp && rm -rf "${TMP_RUST_DIR}"
 
 # install rust system wide
 # FROM HERE https://github.com/rust-lang/rustup/issues/1085
@@ -180,12 +123,13 @@ RUN set -euxo \
     && export RUSTUP_HOME \
     && CARGO_HOME=/opt/rust \
     && export CARGO_HOME \
-    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal 
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal \
+    && rustup component add rustfmt 
 # for cargo crates index NOT inside production system
 
 RUN set -euxo \
-     && mkdir /opt/rust/registry \
-     && chmod -R o+xrw /opt/rust/registry
+    && mkdir /opt/rust/registry \
+    && chmod -R o+xrw /opt/rust/registry
 
 # --profile minimal
 # https://rust-lang.github.io/rustup/concepts/profiles.html
@@ -193,67 +137,36 @@ RUN set -euxo \
 #    --no-modify-path
 #          Don't configure the PATH environment variable
 
-
-RUN set -euxo \
-    && echo "export RUSTUP_HOME=/opt/rust" >>/etc/profile \
-    && echo "export CARGO_HOME=/opt/rust" >>/etc/profile
-
-RUN set -euxo \
-    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.profile \
-    && echo "export CARGO_HOME=/opt/rust" >>/root/.profile 
-
-RUN set -euxo \
-    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.bashrc \
-    && echo "export CARGO_HOME=/opt/rust" >>/root/.bashrc 
-
-RUN set -euxo \
-    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.profile \
-    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.profile 
-
-RUN set -euxo \
-    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.bashrc \
-    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.bashrc 
-
-
-
 # set cargo path for ROOT amd USER
 # set command cargo to path
-RUN set -euxo \    
-    #  && touch /usr/local/bin/rustc \
-    #  && echo "#!/bin/sh" > /usr/local/bin/rustc \
-    #  && echo "RUSTUP_HOME=/opt/rust exec /opt/rust/bin/\${0##*/} \"\$@\"" >> /usr/local/bin/rustc \
+RUN set -euxo \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/etc/profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/etc/profile \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/root/.profile \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/root/.bashrc \
+    && echo "export CARGO_HOME=/opt/rust" >>/root/.bashrc \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.profile \
+    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.profile \
+    && echo "export RUSTUP_HOME=/opt/rust" >>/home/user/.bashrc \
+    && echo "export CARGO_HOME=/opt/rust" >>/home/user/.bashrc \
     && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/root/.bashrc \
     && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/root/.profile \
     && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.bashrc \
     && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.profile
-# && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.bashrc \
-# && touch /home/user/.profile \
-# && echo "export PATH=\"/opt/rust/bin:$PATH\"" >>/home/user/.profile 
 
-# /opt/rust/bin
-
-# RUN set -euxo \
-# && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-# COPY scripts/bootstrap.sh /scripts/
-# copy desktop and terminal settings
-COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf
+COPY desktop_settings/desktop-items-0.conf  /root/.config/pcmanfm/LXDE/desktop-items-0.conf 
 COPY desktop_settings/lxterminal.conf  /root/.config/lxterminal/lxterminal.conf
-
 COPY scripts /scripts/
-# 
-
-# enable ssh passwort access
-RUN set -euxo \ 
-    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
-# && service ssh start
-
 
 # FROM HERE
 # https://dev.to/s1ntaxe770r/how-to-setup-ssh-within-a-docker-container-i5i
-# RUN service ssh start
+# enable ssh passwort access
+RUN set -euxo \ 
+    && sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config 
+
+#PORT for sshd
 EXPOSE 22
-# CMD ["[ -d /var/run/sshd ] || mkdir -p -m0755 /var/run/sshd && /usr/sbin/sshd","-D"]
 
 # copy and set scripts execute 
 COPY scripts/bootstrap.sh /scripts/
@@ -261,11 +174,7 @@ RUN set -euxo \
     && chmod +x /scripts/bootstrap.sh \
     && chmod +x /scripts/start_chromedriver.sh
 
-
-# ENTRYPOINT ["/bin/bash"]
 ENTRYPOINT ["/scripts/bootstrap.sh"]
-# CMD ["/scripts/bootstrap.sh"]
-
 
 # remove empty space
 # :g/^ /norm dw
