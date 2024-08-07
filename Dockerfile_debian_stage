@@ -123,8 +123,8 @@ RUN set -euxo \
     && export RUSTUP_HOME \
     && CARGO_HOME=/opt/rust \
     && export CARGO_HOME \
-    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal \
-    && rustup component add rustfmt 
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --profile minimal 
+#    && rustup component add rustfmt 
 # for cargo crates index NOT inside production system
 
 RUN set -euxo \
