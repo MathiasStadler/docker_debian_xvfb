@@ -31,10 +31,10 @@ launch_xvfb() {
 }
 
 launch_window_manager() {
-    # note the  ampersand
     export DISPLAY=:1
     xrdb "$HOME"/.Xresources
     xsetroot -solid grey
+    # note the  ampersand
     x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
     x-window-manager &
     # Fix to make GNOME work
