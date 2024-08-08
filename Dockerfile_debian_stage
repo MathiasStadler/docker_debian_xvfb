@@ -45,12 +45,34 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
     set -euxo \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet lxde-core \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet bash-completion \
+    build-essential \
+    ca-certificates \
+    chromium \
+    chromium-driver \
+    curl \
+    git \
+    gzip \
+    htop \
+    libasound2 \
+    libasound2-plugins \
+    lsof \
+    lxde-core \
     lxde-icon-theme \
     lxsession-default-apps \
     lxterminal \
     net-tools \
     notification-daemon \
+    openssh-server \
+    pulseaudio \
+    pulseaudio-utils \
+    pulsemixer \
+    sudo \
+    tar \
+    tree \
+    upower \
+    valgrind \
+    vim \
     x11-apps \
     x11-utils \
     x11vnc \
@@ -59,33 +81,11 @@ RUN --mount=type=cache,target=/var/cache/apt \
     xorgxrdp \
     xrdp \
     xvfb \
-    openssh-server \
-    sudo \
-    chromium \
-    chromium-driver \
-    curl \
-    ca-certificates \
-    gzip \
-    tar \
-    libasound2 \
-    libasound2-plugins \
-    pulseaudio \
-    pulseaudio-utils \
-    pulsemixer \
-    upower \
-    build-essential \
-    lsof \
-    vim \
-    git \
-    htop \
-    bash-completion \
-    tree \
-    valgrind \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
     && apt-get --yes --auto-remove autoremove \
-    && apt-get clean --yes \
+    && apt-get --yes clean  \
     && rm --recursive --force /var/lib/apt/lists/* 
 
 # new user
