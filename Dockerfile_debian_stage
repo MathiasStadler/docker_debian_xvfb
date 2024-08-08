@@ -181,7 +181,12 @@ RUN set -euxo \
     && chmod +x /scripts/bootstrap.sh \
     && chmod +x /scripts/start_chromedriver.sh
 
+# CMD /scripts/bootstrap.sh &
+
+# ENTRYPOINT ["/scripts/bootstrap.sh ","sh +x /usr/bin/bash"]
 ENTRYPOINT ["/scripts/bootstrap.sh"]
+
+
 
 # remove empty space
 # :g/^ /norm dw
