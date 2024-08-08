@@ -95,8 +95,8 @@ chown_workspace_rust(){
 start_chromiumdriver(){
 # start under user
 # https://unix.stackexchange.com/questions/232669/how-can-i-run-a-program-as-another-user-in-every-way
-sh +x /scripts/start_chromiumdriver.sh 
-runuser -u user -- /scripts/start_chromedriver.sh
+# sh +x /scripts/start_chromiumdriver.sh 
+runuser --user  user -- sh +x /scripts/start_chromiumdriver.sh &
 }
 
 # setup_rust_path &
