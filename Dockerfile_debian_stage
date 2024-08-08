@@ -127,8 +127,10 @@ RUN set -euxo \
 #    && rustup component add rustfmt 
 # for cargo crates index NOT inside production system
 
+
+# mldir -p mkdir adds any missing parent directories
 RUN set -euxo \
-    && mkdir /opt/rust/registry \
+    && mkdir -p /opt/rust/registry \
     && chmod -R o+xrw /opt/rust/registry
 
 # --profile minimal
