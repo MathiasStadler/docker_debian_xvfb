@@ -45,6 +45,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
     set -euxo \
+    && apt-get update --yes \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests --yes --quiet --quiet bash-completion \
     build-essential \
     ca-certificates \
@@ -130,8 +131,12 @@ RUN set -euxo \
 
 # mldir -p mkdir adds any missing parent directories
 RUN set -euxo \
-    && mkdir -p /opt/rust/registry \
-    && chmod -R o+xrw /opt/rust/registry
+    && mkdir -p /opt/rust/registry 
+    # && chmod -R o+xrw /opt/rust/registry
+
+# give USER all 
+RUN set -euxo \
+    && chown -R user:user  /opt/rust/
 
 # --profile minimal
 # https://rust-lang.github.io/rustup/concepts/profiles.html
@@ -182,6 +187,8 @@ ENTRYPOINT ["/scripts/bootstrap.sh"]
 # :g/^ /norm dw
 # sort
 # cat /tmp/t.txt |sort
+
+# docker buildx build --progress=plain -t debian_stage_next -f Dockerfile_debian_stage "."
 
 # docker buildx build --progress=plain -t debian_stage_next -f Dockerfile_debian_stage "."
 

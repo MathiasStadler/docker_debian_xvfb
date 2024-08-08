@@ -9,7 +9,8 @@ launch_xvfb() {
     # local resolution=${XVFB_RESOLUTION:-1280x1024x24}
     # EIZO 
     # local resolution=${XVFB_RESOLUTION:-1920x1080x24}
-    local resolution=${XVFB_RESOLUTION:-1600x900x24}
+    # local resolution=${XVFB_RESOLUTION:-1600x900x24}
+    local resolution=${XVFB_RESOLUTION:-1600x1080x24}
     local timeout=${XVFB_TIMEOUT:-5}
 
     # Start and wait for either Xvfb to be fully up,
