@@ -113,5 +113,5 @@ install_xeyes &
 chown_workspace_rust &
 start_chromiumdriver &
 # run_vnc_server always as last command
-# run_vnc_server 
-exec "$@"
+run_vnc_server 
+# exec "$@"
