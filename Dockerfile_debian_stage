@@ -190,6 +190,8 @@ ENTRYPOINT ["/scripts/bootstrap.sh"]
 
 # remove empty space
 # :g/^ /norm dw
+
+# :1,$s/$/),/g  
 # sort
 # cat /tmp/t.txt |sort
 
