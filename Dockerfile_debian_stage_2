@@ -1,4 +1,4 @@
-# with plotters  
+
 FROM debian:stable-slim
 
 ENV container=docker
