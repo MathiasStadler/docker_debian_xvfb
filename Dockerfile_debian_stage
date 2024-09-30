@@ -83,11 +83,16 @@ RUN --mount=type=cache,target=/var/cache/apt \
     xrdp \
     xvfb \
     && rm /etc/xrdp/rsakeys.ini /etc/xrdp/cert.pem /etc/xrdp/key.pem \
+    && rm --recursive --force /usr/share/doc && rm -Rf /usr/share/man \
     && mv /usr/bin/lxpolkit /usr/bin/lxpolkit.disabled \
     && apt-get --yes autoclean \ 
     && apt-get --yes --auto-remove autoremove \
     && apt-get --yes clean  \
     && rm --recursive --force /var/lib/apt/lists/* 
+
+# found HERE
+# https://github.com/trfore/docker-debian12-systemd/blob/main/Dockerfile 
+# rm -Rf /usr/share/doc && rm -Rf /usr/share/man
 
 # new user
 ENV PUID='1000' \
