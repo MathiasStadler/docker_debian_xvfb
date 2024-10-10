@@ -57,7 +57,7 @@ debian_stage_next
 # docker inspect 4afd7d8722be
 
 # perl
-# docker volume create workspace_perl_one
+# docker volume create workspace_perl_third
 # docker volume ls
 
 docker run  \
@@ -80,7 +80,7 @@ docker run  \
 --device /dev/dri \
 --volume /sys/fs/cgroup:/sys/fs/cgroup \
 --volume /dev/shm:/dev/shm \
---volume workspace_perl_two:/home/user/workspace_perl:rw \
+--volume workspace_perl_third:/home/user/workspace_perl:rw \
 --env PULSE_SERVER=unix:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume "${XDG_RUNTIME_DIR}"/pulse/native:"${XDG_RUNTIME_DIR}"/pulse/native \
 --volume ~/.config/pulse/cookie:/root/.config/pulse/cookie \
