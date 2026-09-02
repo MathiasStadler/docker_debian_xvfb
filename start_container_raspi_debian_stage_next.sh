@@ -63,7 +63,7 @@ debian_stage_next
 docker run  \
 --security-opt apparmor=unconfined \
 --security-opt seccomp=unconfined \
---cap-add SYS_ADMIN \
+--cap-add SYS_ADMIN \https://github.com/MathiasStadler/docker_debian_xvfb.git
 --cap-add CAP_SYSLOG \
 --cap-add CAP_PERFMON \
 --cap-add CAP_BPF \
@@ -123,4 +123,6 @@ docker run  \
 -p 2258:22 \
 -p 5958:5900 \
 debian_stage_next
+
+
 
